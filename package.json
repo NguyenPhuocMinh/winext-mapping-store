@@ -1,0 +1,17 @@
+{
+  "name": "app-mapping-store",
+  "version": "1.0.0",
+  "description": "Building middleware express",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "winext"
+  ],
+  "author": "Minh Nguyễn",
+  "license": "ISC",
+  "dependencies": {
+    "winext": "git+https://github.com/NguyenPhuocMinh/winext.git#1ca0017482120bcf416a12e099c2d0b21bc9e55e"
+  }
+}
