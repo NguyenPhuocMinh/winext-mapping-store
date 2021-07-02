@@ -12,12 +12,12 @@ function handleError(params = {}) {
 
   if (err instanceof Error) {
     loggerFactory.warn(`error has type Error`, {
-      requestId: `${requestId}`,
+      requestId: `${requestId}`
     });
     response.status(500).send({
       name: err.name,
       message: err.message
-    })
+    });
     return Promise.reject(err);
   } else {
     loggerFactory.warn(`error has not type Error`, { requestId: `${requestId}` });
@@ -25,9 +25,9 @@ function handleError(params = {}) {
     response.status(statusCode).set({ 'X-Return-Code': returnCode }).send({
       name: name,
       message: message
-    })
+    });
     return Promise.reject(JSON.stringify(err));
   }
-};
+}
 
 module.exports = handleError;

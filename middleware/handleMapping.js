@@ -14,7 +14,8 @@ function handleMapping(params = {}) {
     output,
     service,
     requestId,
-    loggerFactory
+    loggerFactory,
+    loggerTracer
   } = params;
 
   let argsInput = {};
@@ -23,6 +24,7 @@ function handleMapping(params = {}) {
   const opts = {
     requestId: requestId,
     loggerFactory: loggerFactory,
+    loggerTracer: loggerTracer
   };
 
   if (input) {
@@ -32,7 +34,7 @@ function handleMapping(params = {}) {
   }
 
   return new Promise((resolve, reject) => {
-    resolve(argsInput)
+    resolve(argsInput);
   })
     .then(args => {
       return service(args, opts);
@@ -48,12 +50,11 @@ function handleMapping(params = {}) {
       return argsOutput;
     })
     .then(data => {
-
       const headers = get(data, 'headers');
       const body = get(data, 'body');
 
       if (isEmpty(headers) && !isEmpty(body)) {
-        return response.status(200).set({ 'X-Return-Code': 0 }).send(body)
+        return response.status(200).set({ 'X-Return-Code': 0 }).send(body);
       } else if (isEmpty(headers) && isEmpty(body)) {
         return response.status(200).set({ 'X-Return-Code': 0 }).send(data);
       } else {
@@ -62,8 +63,8 @@ function handleMapping(params = {}) {
       }
     })
     .catch(err => {
-      handleError({ err, response, requestId, loggerFactory });
+      handleError({ err, response, requestId, loggerFactory, loggerTracer });
     });
-};
+}
 
 module.exports = handleMapping;
