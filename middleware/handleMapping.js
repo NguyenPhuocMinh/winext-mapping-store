@@ -53,7 +53,7 @@ function handleMapping(params = {}) {
       return argsOutput;
     })
     .then(data => {
-      loggerTracer.debug(chalk.green(`Data transform : ${JSON.stringify(data)}`));
+      loggerTracer.debug(chalk.green(`data transform : ${JSON.stringify(data)}`));
       const headers = get(data, 'headers');
       const body = get(data, 'body');
 
