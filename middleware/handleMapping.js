@@ -3,6 +3,7 @@
 const winext = require('winext');
 const Promise = winext.require('bluebird');
 const lodash = winext.require('lodash');
+const chalk = winext.require('chalk');
 const handleError = require('./handleError');
 const { get, isEmpty, isFunction } = lodash;
 
@@ -34,6 +35,7 @@ function handleMapping(params = {}) {
   }
 
   return new Promise((resolve, reject) => {
+    loggerTracer.debug(chalk.green(`args input: ${JSON.stringify(argsInput)}`));
     resolve(argsInput);
   })
     .then(args => {
@@ -47,9 +49,11 @@ function handleMapping(params = {}) {
           argsOutput = result;
         }
       }
+      loggerTracer.debug(chalk.green(`args output: ${JSON.stringify(argsOutput)}`));
       return argsOutput;
     })
     .then(data => {
+      loggerTracer.debug(chalk.green(`Data transform : ${JSON.stringify(data)}`));
       const headers = get(data, 'headers');
       const body = get(data, 'body');
 
