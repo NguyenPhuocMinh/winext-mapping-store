@@ -52,9 +52,10 @@ function handleMapping(params = {}) {
       return argsOutput;
     })
     .then(data => {
-      loggerTracer.debug(chalk.green(`data transform : ${JSON.stringify(data)}`));
       const headers = get(data, 'headers');
+      loggerTracer.debug(chalk.green(`headers transform : ${JSON.stringify(headers)}`));
       const body = get(data, 'body');
+      loggerTracer.debug(chalk.green(`body transform : ${JSON.stringify(body)}`));
 
       if (isEmpty(headers) && !isEmpty(body)) {
         return response.status(200).set({ 'X-Return-Code': 0 }).send(body);
