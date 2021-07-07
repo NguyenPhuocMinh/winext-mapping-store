@@ -35,10 +35,10 @@ function handleMapping(params = {}) {
   }
 
   return new Promise((resolve, reject) => {
-    loggerTracer.debug(chalk.green(`args input: ${JSON.stringify(argsInput)}`));
     resolve(argsInput);
   })
     .then(args => {
+      loggerTracer.debug(chalk.green(`args service: ${JSON.stringify(args)}`));
       return service(args, opts);
     })
     .then(result => {
@@ -49,7 +49,6 @@ function handleMapping(params = {}) {
           argsOutput = result;
         }
       }
-      loggerTracer.debug(chalk.green(`args output: ${JSON.stringify(argsOutput)}`));
       return argsOutput;
     })
     .then(data => {
