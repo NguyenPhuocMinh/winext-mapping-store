@@ -53,14 +53,16 @@ function handleMapping(params = {}) {
     })
     .then(data => {
       const headers = get(data, 'headers');
-      loggerTracer.debug(chalk.blue(`headers transform : ${JSON.stringify(headers)}`));
       const body = get(data, 'body');
 
       if (isEmpty(headers) && !isEmpty(body)) {
+        loggerFactory.debug('data transform no headers and have body', { requestId: requestId });
         return response.status(200).set({ 'X-Return-Code': 0 }).send(body);
       } else if (isEmpty(headers) && isEmpty(body)) {
+        loggerFactory.debug('data transform no headers and no body', { requestId: requestId });
         return response.status(200).set({ 'X-Return-Code': 0 }).send(data);
       } else {
+        loggerFactory.debug('data transform have body', { requestId: requestId });
         headers['X-Return-Code'] = 0;
         return response.status(200).set(headers).send(body);
       }
