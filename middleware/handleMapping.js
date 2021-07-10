@@ -38,7 +38,7 @@ function handleMapping(params = {}) {
     resolve(argsInput);
   })
     .then(args => {
-      loggerTracer.debug(chalk.green(`args service: ${JSON.stringify(args)}`));
+      loggerTracer.debug(chalk.blue(`args service: ${JSON.stringify(args)}`));
       return service(args, opts);
     })
     .then(result => {
