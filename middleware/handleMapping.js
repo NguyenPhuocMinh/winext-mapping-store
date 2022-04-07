@@ -62,7 +62,7 @@ function handleMapping(params = {}) {
         loggerFactory.debug('data transform no headers and no body', { requestId: requestId });
         return response.status(200).set({ 'X-Return-Code': 0 }).send(data);
       } else {
-        loggerFactory.debug('data transform have body', { requestId: requestId });
+        loggerFactory.debug('data transform have headers and have body', { requestId: requestId });
         headers['X-Return-Code'] = 0;
         return response.status(200).set(headers).send(body);
       }
