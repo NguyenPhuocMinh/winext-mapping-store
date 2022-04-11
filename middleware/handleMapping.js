@@ -5,18 +5,21 @@ const Promise = winext.require('bluebird');
 const lodash = winext.require('lodash');
 const chalk = winext.require('chalk');
 const handleError = require('./handleError');
+const handleCache = require('./handleCache');
 const { get, isEmpty, isFunction } = lodash;
 
 function handleMapping(params = {}) {
   const {
     request,
     response,
+    next,
     input,
     output,
     service,
     requestId,
     loggerFactory,
-    loggerTracer
+    loggerTracer,
+    redisStore,
   } = params;
 
   let argsInput = {};
