@@ -24,7 +24,7 @@ async function handleCache(params = {}) {
     }
   } else {
     loggerFactory.debug('Not method GET', { requestId: requestId });
-    return next();
+    return response.status(200).set({ 'X-Return-Code': 0 }).send(body);
   }
 }
 

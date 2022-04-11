@@ -52,8 +52,7 @@ function handleMapping(params = {}) {
 
       if (isEmpty(headers) && !isEmpty(body)) {
         loggerFactory.warn('data transform no headers and have body', { requestId: requestId });
-        return handleCache({ request, response, next, body, redisClient, requestId, loggerFactory, loggerTracer });
-        // return response.status(200).set({ 'X-Return-Code': 0 }).send(body);
+        return response.status(200).set({ 'X-Return-Code': 0 }).send(body);
       } else if (isEmpty(headers) && isEmpty(body)) {
         loggerFactory.warn('data transform no headers and no body', { requestId: requestId });
         return response.status(200).set({ 'X-Return-Code': 0 }).send(data);

@@ -9,9 +9,9 @@ function handleError(params = {}) {
   loggerFactory.error(`Func handleError has error`, { requestId: `${requestId}` });
 
   if (err instanceof Error) {
-    loggerFactory.warn(`error has type Error`, {
+    loggerFactory.error(`error has type Error`, {
       requestId: `${requestId}`,
-      args: { err },
+      args: err.name,
     });
     response.status(500).send({
       name: err.name,
@@ -19,7 +19,7 @@ function handleError(params = {}) {
     });
     return Promise.reject(err);
   } else {
-    loggerFactory.warn(`error has not type Error`, { requestId: `${requestId}`, args: { err } });
+    loggerFactory.error(`error has not type Error`, { requestId: `${requestId}`, args: err });
     const { name, message, statusCode, returnCode } = err;
     response.status(statusCode).set({ 'X-Return-Code': returnCode }).send({
       name: name,
