@@ -9,18 +9,10 @@ const handleCache = require('./handleCache');
 const { get, isEmpty, isFunction } = lodash;
 
 function handleMapping(params = {}) {
-  const {
-    request,
-    response,
-    next,
-    input,
-    output,
-    service,
-    requestId,
-    loggerFactory,
-    loggerTracer,
-    redisStore,
-  } = params;
+  const { request, response, next, input, output, service, requestId, loggerFactory, loggerTracer, redisStore } =
+    params;
+
+  const redisClient = redisStore.redisClient;
 
   let argsInput = {};
   let argsOutput = {};
@@ -28,7 +20,7 @@ function handleMapping(params = {}) {
   const opts = {
     requestId: requestId,
     loggerFactory: loggerFactory,
-    loggerTracer: loggerTracer
+    loggerTracer: loggerTracer,
   };
 
   if (input) {
@@ -40,11 +32,11 @@ function handleMapping(params = {}) {
   return new Promise((resolve, reject) => {
     resolve(argsInput);
   })
-    .then(args => {
+    .then((args) => {
       loggerTracer.warn(chalk.yellow(`args service: ${JSON.stringify(args)}`));
       return service(args, opts);
     })
-    .then(result => {
+    .then((result) => {
       if (output) {
         if (isFunction(output.transform)) {
           argsOutput = output.transform(result);
@@ -54,13 +46,14 @@ function handleMapping(params = {}) {
       }
       return argsOutput;
     })
-    .then(data => {
+    .then((data) => {
       const headers = get(data, 'headers');
       const body = get(data, 'body');
 
       if (isEmpty(headers) && !isEmpty(body)) {
         loggerFactory.warn('data transform no headers and have body', { requestId: requestId });
-        return response.status(200).set({ 'X-Return-Code': 0 }).send(body);
+        return handleCache({ request, response, next, body, redisClient, requestId, loggerFactory, loggerTracer });
+        // return response.status(200).set({ 'X-Return-Code': 0 }).send(body);
       } else if (isEmpty(headers) && isEmpty(body)) {
         loggerFactory.warn('data transform no headers and no body', { requestId: requestId });
         return response.status(200).set({ 'X-Return-Code': 0 }).send(data);
@@ -70,7 +63,7 @@ function handleMapping(params = {}) {
         return response.status(200).set(headers).send(body);
       }
     })
-    .catch(err => {
+    .catch((err) => {
       handleError({ err, response, requestId, loggerFactory, loggerTracer });
     });
 }
