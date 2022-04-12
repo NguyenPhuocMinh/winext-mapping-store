@@ -45,13 +45,20 @@ function handleMapping(params = {}) {
       }
       return argsOutput;
     })
-    .then((data) => {
+    .then(async (data) => {
       const headers = get(data, 'headers');
       const body = get(data, 'body');
 
       if (isEmpty(headers) && !isEmpty(body)) {
         loggerFactory.warn('data transform no headers and have body', { requestId: requestId });
-        return response.status(200).set({ 'X-Return-Code': 0 }).send(body);
+        const dataFromRedis = await redisClient.getOne({ key: request.path });
+        if (!isEmpty(dataFromRedis)) {
+          loggerTracer.warn(chalk.yellow.bold(`has data from redis`));
+          return response.status(200).set({ 'X-Return-Code': 0 }).send(dataFromRedis);
+        } else {
+          loggerTracer.warn(chalk.yellow.bold(`no has data from redis`));
+          return response.status(200).set({ 'X-Return-Code': 0 }).send(body);
+        }
       } else if (isEmpty(headers) && isEmpty(body)) {
         loggerFactory.warn('data transform no headers and no body', { requestId: requestId });
         return response.status(200).set({ 'X-Return-Code': 0 }).send(data);
