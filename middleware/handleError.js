@@ -2,10 +2,12 @@
 
 const winext = require('winext');
 const Promise = winext.require('bluebird');
+const chalk = winext.require('chalk');
 
 function handleError(params = {}) {
-  const { err, response, requestId, loggerFactory } = params;
+  const { err, response, requestId, loggerFactory, loggerTracer } = params;
 
+  loggerTracer.info(chalk.green.bold(`Load func handleError successfully!`));
   loggerFactory.error(`Func handleError has error`, { requestId: `${requestId}` });
 
   if (err instanceof Error) {

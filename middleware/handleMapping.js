@@ -5,7 +5,6 @@ const Promise = winext.require('bluebird');
 const lodash = winext.require('lodash');
 const chalk = winext.require('chalk');
 const handleError = require('./handleError');
-const handleCache = require('./handleCache');
 const { get, isEmpty, isFunction } = lodash;
 
 function handleMapping(params = {}) {
@@ -33,7 +32,7 @@ function handleMapping(params = {}) {
     resolve(argsInput);
   })
     .then((args) => {
-      loggerTracer.warn(chalk.yellow(`args service: ${JSON.stringify(args)}`));
+      loggerTracer.warn(chalk.yellow.bold(`args service: ${JSON.stringify(args)}`));
       return service(args, opts);
     })
     .then((result) => {
