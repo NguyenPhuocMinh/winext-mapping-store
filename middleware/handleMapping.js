@@ -8,10 +8,7 @@ const handleError = require('./handleError');
 const { get, isEmpty, isFunction } = lodash;
 
 function handleMapping(params = {}) {
-  const { request, response, next, input, output, service, requestId, loggerFactory, loggerTracer, redisStore } =
-    params;
-
-  const redisClient = redisStore.redisClient;
+  const { request, response, input, output, service, requestId, loggerFactory, loggerTracer } = params;
 
   let argsInput = {};
   let argsOutput = {};
@@ -51,14 +48,7 @@ function handleMapping(params = {}) {
 
       if (isEmpty(headers) && !isEmpty(body)) {
         loggerFactory.warn('data transform no headers and have body', { requestId: requestId });
-        const dataFromRedis = await redisClient.getOne({ key: request.path });
-        if (!isEmpty(dataFromRedis)) {
-          loggerTracer.warn(chalk.yellow.bold(`has data from redis`));
-          return response.status(200).set({ 'X-Return-Code': 0 }).send(dataFromRedis);
-        } else {
-          loggerTracer.warn(chalk.yellow.bold(`no has data from redis`));
-          return response.status(200).set({ 'X-Return-Code': 0 }).send(body);
-        }
+        return response.status(200).set({ 'X-Return-Code': 0 }).send(body);
       } else if (isEmpty(headers) && isEmpty(body)) {
         loggerFactory.warn('data transform no headers and no body', { requestId: requestId });
         return response.status(200).set({ 'X-Return-Code': 0 }).send(data);
