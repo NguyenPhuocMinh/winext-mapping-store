@@ -35,7 +35,17 @@ async function handleCaching(params = {}) {
           requestId: `${requestId}`,
           args: redisKey,
         });
-        response.status(200).set({ 'X-Return-Code': 0 }).send(JSON.parse(reply));
+        const data = JSON.parse(reply);
+        if (!isEmpty(data.total)) {
+          const headers = {
+            'X-Total-Count': response.total,
+            'Access-Control-Expose-Headers': 'X-Total-Count',
+            'X-Return-Code': 0,
+          };
+          response.status(200).set(headers).send(data);
+        } else {
+          response.status(200).set({ 'X-Return-Code': 0 }).send(data);
+        }
         await redisClient.disconnect();
         loggerFactory.info(`handleCaching has been end`, {
           requestId: `${requestId}`,
