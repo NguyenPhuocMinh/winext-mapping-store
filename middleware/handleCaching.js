@@ -4,7 +4,7 @@ const winext = require('winext');
 const lodash = winext.require('lodash');
 const chalk = winext.require('chalk');
 const handleError = require('./handleError');
-const { isEmpty } = lodash;
+const { isEmpty, isNil } = lodash;
 
 async function handleCaching(params = {}) {
   const { request, response, next, redisStore, requestId, loggerFactory, loggerTracer } = params;
@@ -36,9 +36,9 @@ async function handleCaching(params = {}) {
           args: redisKey,
         });
         const data = JSON.parse(reply);
-        if (!isEmpty(data.total)) {
+        if (!isNil(data.total)) {
           const headers = {
-            'X-Total-Count': response.total,
+            'X-Total-Count': data.total,
             'Access-Control-Expose-Headers': 'X-Total-Count',
             'X-Return-Code': 0,
           };
