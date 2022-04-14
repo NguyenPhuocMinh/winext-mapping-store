@@ -8,7 +8,6 @@ function handleError(params = {}) {
   const { err, response, requestId, loggerFactory, loggerTracer } = params;
 
   loggerTracer.info(chalk.green.bold(`Load func handleError successfully!`));
-  loggerFactory.error(`Func handleError has error`, { requestId: `${requestId}` });
 
   if (err instanceof Error) {
     loggerFactory.error(`error has type Error`, {

@@ -10,6 +10,8 @@ const { get, isEmpty, isFunction } = lodash;
 function handleMapping(params = {}) {
   const { request, response, input, output, service, requestId, loggerFactory, loggerTracer } = params;
 
+  loggerTracer.info(chalk.green.bold(`Load func handleMapping successfully!`));
+
   let argsInput = {};
   let argsOutput = {};
 
