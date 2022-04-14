@@ -31,12 +31,19 @@ async function handleCaching(params = {}) {
         });
       }
       if (!isEmpty(reply)) {
-        loggerFactory.info(`handleCaching has data with redisKey`, {
+        loggerFactory.warn(`handleCaching has data with redisKey`, {
           requestId: `${requestId}`,
           args: redisKey,
         });
         const data = JSON.parse(reply);
         if (!isNil(data.total)) {
+          loggerFactory.warn(`handleCaching has data and total with redisKey`, {
+            requestId: `${requestId}`,
+            args: {
+              redisKey: redisKey,
+              total: data.total,
+            },
+          });
           const headers = {
             'X-Total-Count': data.total,
             'Access-Control-Expose-Headers': 'X-Total-Count',
@@ -47,15 +54,15 @@ async function handleCaching(params = {}) {
           response.status(200).set({ 'X-Return-Code': 0 }).send(data);
         }
         await redisClient.disconnect();
-        loggerFactory.info(`handleCaching has been end`, {
+        loggerFactory.warn(`handleCaching has been end`, {
           requestId: `${requestId}`,
         });
       } else {
-        loggerFactory.info(`handleCaching no has data with redisKey`, {
+        loggerFactory.warn(`handleCaching no has data with redisKey`, {
           requestId: `${requestId}`,
           args: redisKey,
         });
-        loggerFactory.info(`handleCaching has been end`, {
+        loggerFactory.warn(`handleCaching has been end`, {
           requestId: `${requestId}`,
         });
         return next();
