@@ -37,16 +37,19 @@ async function handleCaching(params = {}) {
         });
         response.status(200).set({ 'X-Return-Code': 0 }).send(JSON.parse(reply));
         await redisClient.disconnect();
+        loggerFactory.info(`handleCaching has been end`, {
+          requestId: `${requestId}`,
+        });
       } else {
         loggerFactory.info(`handleCaching no has data with redisKey`, {
           requestId: `${requestId}`,
           args: redisKey,
         });
+        loggerFactory.info(`handleCaching has been end`, {
+          requestId: `${requestId}`,
+        });
         return next();
       }
-    });
-    loggerFactory.info(`handleCaching has been end`, {
-      requestId: `${requestId}`,
     });
   } catch (err) {
     handleError({ err, response, requestId, loggerFactory, loggerTracer });
