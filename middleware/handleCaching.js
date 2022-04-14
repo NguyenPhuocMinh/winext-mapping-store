@@ -35,7 +35,7 @@ async function handleCaching(params = {}) {
           requestId: `${requestId}`,
           args: redisKey,
         });
-        response.status(200).send(JSON.parse(reply));
+        response.status(200).set({ 'X-Return-Code': 0 }).send(JSON.parse(reply));
         await redisClient.disconnect();
       } else {
         loggerFactory.info(`handleCaching no has data with redisKey`, {
