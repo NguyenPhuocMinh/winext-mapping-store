@@ -9,7 +9,7 @@ const handleTemplate = require('./handleTemplate');
 const { get, isEmpty, isFunction } = lodash;
 
 function handleMapping(params = {}) {
-  const { request, response, input, output, service, requestId, loggerFactory, loggerTracer } = params;
+  const { request, response, input, output, service, requestId, loggerFactory, loggerTracer, messageCodes } = params;
 
   loggerTracer.info(chalk.green.bold(`Load func handleMapping successfully!`));
 
@@ -48,8 +48,10 @@ function handleMapping(params = {}) {
     .then(async (data) => {
       const headers = get(data, 'headers');
       const body = get(data, 'body');
+      const message = get(data, 'message');
 
-      const template = handleTemplate(request, opts, body);
+      const template = handleTemplate({ request, opts, body, message, messageCodes });
+      console.log("🚀 ~ file: handleMapping.js ~ line 54 ~ .then ~ template", template)
 
       if (isEmpty(headers) && !isEmpty(body)) {
         loggerFactory.warn('data transform no headers and have body', { requestId: requestId });
