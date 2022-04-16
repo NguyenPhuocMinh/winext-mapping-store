@@ -5,6 +5,7 @@ const Promise = winext.require('bluebird');
 const lodash = winext.require('lodash');
 const chalk = winext.require('chalk');
 const handleError = require('./handleError');
+const handleTemplate = require('./handleTemplate');
 const { get, isEmpty, isFunction } = lodash;
 
 function handleMapping(params = {}) {
@@ -47,6 +48,8 @@ function handleMapping(params = {}) {
     .then(async (data) => {
       const headers = get(data, 'headers');
       const body = get(data, 'body');
+
+      const template = handleTemplate(request, opts, body);
 
       if (isEmpty(headers) && !isEmpty(body)) {
         loggerFactory.warn('data transform no headers and have body', { requestId: requestId });
