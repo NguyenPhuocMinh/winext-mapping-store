@@ -43,14 +43,13 @@ async function handleCaching(params = {}) {
           requestId: `${requestId}`,
           args: redisKey,
         });
+
+        let template;
         const body = {};
         const data = JSON.parse(reply);
-        console.log('🚀 ~ file: handleCaching.js ~ line 47 ~ awaitredisClient.get ~ data', data);
         const message = get(data, 'message');
-        let template;
 
         body.result = data.result;
-        console.log('🚀 ~ file: handleCaching.js ~ line 50 ~ awaitredisClient.get ~ template', template);
 
         if (!isNil(data.total)) {
           loggerFactory.warn(`handleCaching has data and total with redisKey`, {
