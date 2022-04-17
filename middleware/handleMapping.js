@@ -80,7 +80,6 @@ function handleMapping(params = {}) {
         messageCodes,
         contextPath,
       });
-      console.log('🚀 ~ file: handleMapping.js ~ line 54 ~ .then ~ template', template);
 
       if (isEmpty(headers) && !isEmpty(body)) {
         loggerFactory.warn('data transform no headers and have body', { requestId: requestId });
