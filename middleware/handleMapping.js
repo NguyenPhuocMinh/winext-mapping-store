@@ -6,7 +6,7 @@ const lodash = winext.require('lodash');
 const chalk = winext.require('chalk');
 const handleError = require('./handleError');
 const handleTemplate = require('./handleTemplate');
-const { get, isEmpty, isFunction } = lodash;
+const { get, isEmpty, isFunction, isNil } = lodash;
 
 function handleMapping(params = {}) {
   const {
@@ -61,10 +61,21 @@ function handleMapping(params = {}) {
       const body = get(data, 'body');
       const message = get(data, 'message');
 
+      const result = get(body, 'result');
+      const total = get(body, 'total');
+
+      const dataBody = {
+        result: result,
+      };
+
+      if (!isNil(total)) {
+        dataBody.total = total;
+      }
+
       const template = handleTemplate({
         request,
         opts,
-        body,
+        body: dataBody,
         message,
         messageCodes,
         contextPath,
