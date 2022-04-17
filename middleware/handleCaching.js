@@ -43,11 +43,13 @@ async function handleCaching(params = {}) {
           requestId: `${requestId}`,
           args: redisKey,
         });
+        const body = {};
         const data = JSON.parse(reply);
-        console.log("🚀 ~ file: handleCaching.js ~ line 47 ~ awaitredisClient.get ~ data", data)
+        console.log('🚀 ~ file: handleCaching.js ~ line 47 ~ awaitredisClient.get ~ data', data);
         const message = get(data, 'message');
+        let template;
 
-        const template = handleTemplate({ request, opts, body: data, message, messageCodes, contextPath });
+        body.result = data.result;
         console.log('🚀 ~ file: handleCaching.js ~ line 50 ~ awaitredisClient.get ~ template', template);
 
         if (!isNil(data.total)) {
@@ -58,14 +60,26 @@ async function handleCaching(params = {}) {
               total: data.total,
             },
           });
+
+          body.total = data.total;
+
+          template = handleTemplate({ request, opts, body, message, messageCodes, contextPath });
+
           const headers = {
             'X-Total-Count': data.total,
             'Access-Control-Expose-Headers': 'X-Total-Count',
             'X-Return-Code': 0,
           };
-          response.status(template.statusCode).set(headers).send(data);
+          response.status(template.statusCode).set(headers).send(template);
         } else {
-          response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(data);
+          loggerFactory.warn(`handleCaching has data and no total with redisKey`, {
+            requestId: `${requestId}`,
+            args: {
+              redisKey: redisKey,
+            },
+          });
+          template = handleTemplate({ request, opts, body, message, messageCodes, contextPath });
+          response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
         }
         await redisClient.disconnect();
         loggerFactory.warn(`handleCaching has been end`, {
