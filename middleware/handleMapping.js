@@ -9,18 +9,7 @@ const handleTemplate = require('./handleTemplate');
 const { get, isEmpty, isFunction, isNil } = lodash;
 
 function handleMapping(params = {}) {
-  const {
-    request,
-    response,
-    input,
-    output,
-    service,
-    requestId,
-    loggerFactory,
-    loggerTracer,
-    messageCodes,
-    contextPath,
-  } = params;
+  const { request, response, input, output, service, requestId, loggerFactory, loggerTracer, messageCodes } = params;
 
   loggerTracer.info(chalk.green.bold(`Load func handleMapping successfully!`));
 
@@ -78,7 +67,6 @@ function handleMapping(params = {}) {
         body: dataBody,
         message,
         messageCodes,
-        contextPath,
       });
 
       if (isEmpty(headers) && !isEmpty(body)) {

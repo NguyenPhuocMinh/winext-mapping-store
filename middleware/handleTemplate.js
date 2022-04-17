@@ -4,14 +4,12 @@ const winext = require('winext');
 const chalk = winext.require('chalk');
 
 const handleTemplate = (params = {}) => {
-  const { request, opts = {}, body, message, messageCodes, contextPath } = params;
+  const { request, opts = {}, body, message, messageCodes } = params;
   const { requestId, loggerFactory, loggerTracer } = opts;
 
   loggerTracer.info(chalk.green.bold(`Load func handleTemplate successfully!`));
 
   const { path, method } = request;
-
-  const endpoint = `${contextPath}${path}`;
 
   const template = {};
 
@@ -24,7 +22,7 @@ const handleTemplate = (params = {}) => {
     });
     template.data = body;
     template.method = method;
-    template.endpoint = endpoint;
+    template.endpoint = path;
     template.name = message;
     template.message = messageCodes[message].message;
     template.returnCode = messageCodes[message].returnCode;
@@ -36,7 +34,7 @@ const handleTemplate = (params = {}) => {
     });
     template.data = {};
     template.method = method;
-    template.endpoint = endpoint;
+    template.endpoint = path;
     template.name = message;
     template.message = `Message name [${message}] not supported`;
     template.returnCode = 1000;

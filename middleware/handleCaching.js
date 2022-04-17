@@ -8,8 +8,7 @@ const handleTemplate = require('./handleTemplate');
 const { get, isEmpty, isNil } = lodash;
 
 async function handleCaching(params = {}) {
-  const { request, response, next, redisStore, requestId, loggerFactory, loggerTracer, messageCodes, contextPath } =
-    params;
+  const { request, response, next, redisStore, requestId, loggerFactory, loggerTracer, messageCodes } = params;
 
   const opts = {
     requestId: requestId,
@@ -62,7 +61,7 @@ async function handleCaching(params = {}) {
 
           body.total = data.total;
 
-          template = handleTemplate({ request, opts, body, message, messageCodes, contextPath });
+          template = handleTemplate({ request, opts, body, message, messageCodes });
 
           const headers = {
             'X-Total-Count': data.total,
@@ -77,7 +76,7 @@ async function handleCaching(params = {}) {
               redisKey: redisKey,
             },
           });
-          template = handleTemplate({ request, opts, body, message, messageCodes, contextPath });
+          template = handleTemplate({ request, opts, body, message, messageCodes });
           response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
         }
         await redisClient.disconnect();
