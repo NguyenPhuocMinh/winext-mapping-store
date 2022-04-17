@@ -1,23 +1,19 @@
 'use strict';
 
 const winext = require('winext');
-const lodash = winext.require('lodash');
 const chalk = winext.require('chalk');
-const { get, isEmpty } = lodash;
 
 const handleTemplate = (params = {}) => {
-  const { request, opts = {}, body, message, messageCodes } = params;
+  const { response, request, opts = {}, body, message, messageCodes, contextPath } = params;
   const { requestId, loggerFactory, loggerTracer } = opts;
 
   loggerTracer.info(chalk.green.bold(`Load func handleTemplate successfully!`));
 
   const { path, method } = request;
 
-  const template = {
-    data: body,
-    method: method,
-    endpoint: path,
-  };
+  const endpoint = `${contextPath}${path}`;
+
+  const template = {};
 
   loggerFactory.warn('Func handleTemplate has been start', { requestId: requestId });
 
@@ -26,6 +22,9 @@ const handleTemplate = (params = {}) => {
       requestId: requestId,
       args: message,
     });
+    template.data = body;
+    template.method = method;
+    template.endpoint = endpoint;
     template.name = message;
     template.message = messageCodes[message].message;
     template.returnCode = messageCodes[message].returnCode;
@@ -35,10 +34,15 @@ const handleTemplate = (params = {}) => {
       requestId: requestId,
       args: message,
     });
+    template.data = {};
+    template.method = method;
+    template.endpoint = endpoint;
     template.name = message;
     template.message = `Message name [${message}] not supported`;
     template.returnCode = 1000;
     template.statusCode = 400;
+
+    return response.status(400).send(template);
   }
 
   loggerFactory.warn('Func handleTemplate has been end', { requestId: requestId });

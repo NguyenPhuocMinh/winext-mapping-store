@@ -7,7 +7,8 @@ const handleError = require('./handleError');
 const { isEmpty, isNil } = lodash;
 
 async function handleCaching(params = {}) {
-  const { request, response, next, redisStore, requestId, loggerFactory, loggerTracer } = params;
+  const { request, response, next, redisStore, opts = {} } = params;
+  const { requestId, loggerFactory, loggerTracer } = opts;
 
   loggerTracer.info(chalk.green.bold(`Load func handleCaching successfully!`));
 
