@@ -44,6 +44,7 @@ async function handleCaching(params = {}) {
           args: redisKey,
         });
         const data = JSON.parse(reply);
+        console.log("🚀 ~ file: handleCaching.js ~ line 47 ~ awaitredisClient.get ~ data", data)
         const message = get(data, 'message');
 
         const template = handleTemplate({ request, opts, body: data, message, messageCodes, contextPath });
