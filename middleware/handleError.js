@@ -16,8 +16,13 @@ function handleError(params = {}) {
       args: err.name,
     });
     response.status(500).send({
+      data: {},
+      method: method,
+      endpoint: path,
       name: err.name,
       message: err.message,
+      returnCode: 5000,
+      statusCode: 500,
     });
     return Promise.reject(err);
   } else {
