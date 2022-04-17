@@ -62,7 +62,6 @@ function handleMapping(params = {}) {
       const message = get(data, 'message');
 
       const template = handleTemplate({
-        response,
         request,
         opts,
         body,
