@@ -46,7 +46,7 @@ async function handleCaching(params = {}) {
         const data = JSON.parse(reply);
         const message = get(data, 'message');
 
-        const template = handleTemplate({ request, opts, data, message, messageCodes, contextPath });
+        const template = handleTemplate({ request, opts, body: data, message, messageCodes, contextPath });
         console.log('🚀 ~ file: handleCaching.js ~ line 50 ~ awaitredisClient.get ~ template', template);
 
         if (!isNil(data.total)) {
@@ -62,9 +62,9 @@ async function handleCaching(params = {}) {
             'Access-Control-Expose-Headers': 'X-Total-Count',
             'X-Return-Code': 0,
           };
-          response.status(200).set(headers).send(data);
+          response.status(template.statusCode).set(headers).send(data);
         } else {
-          response.status(200).set({ 'X-Return-Code': 0 }).send(data);
+          response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(data);
         }
         await redisClient.disconnect();
         loggerFactory.warn(`handleCaching has been end`, {
