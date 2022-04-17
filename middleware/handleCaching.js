@@ -4,10 +4,18 @@ const winext = require('winext');
 const lodash = winext.require('lodash');
 const chalk = winext.require('chalk');
 const handleError = require('./handleError');
-const { isEmpty, isNil } = lodash;
+const handleTemplate = require('./handleTemplate');
+const { get, isEmpty, isNil } = lodash;
 
 async function handleCaching(params = {}) {
-  const { request, response, next, redisStore, requestId, loggerFactory, loggerTracer } = params;
+  const { request, response, next, redisStore, requestId, loggerFactory, loggerTracer, messageCodes, contextPath } =
+    params;
+
+  const opts = {
+    requestId: requestId,
+    loggerFactory: loggerFactory,
+    loggerTracer: loggerTracer,
+  };
 
   loggerTracer.info(chalk.green.bold(`Load func handleCaching successfully!`));
 
@@ -36,6 +44,11 @@ async function handleCaching(params = {}) {
           args: redisKey,
         });
         const data = JSON.parse(reply);
+        const message = get(data, 'message');
+
+        const template = handleTemplate({ request, opts, data, message, messageCodes, contextPath });
+        console.log('🚀 ~ file: handleCaching.js ~ line 50 ~ awaitredisClient.get ~ template', template);
+
         if (!isNil(data.total)) {
           loggerFactory.warn(`handleCaching has data and total with redisKey`, {
             requestId: `${requestId}`,

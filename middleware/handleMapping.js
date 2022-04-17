@@ -76,7 +76,7 @@ function handleMapping(params = {}) {
         return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
       } else if (isEmpty(headers) && isEmpty(body)) {
         loggerFactory.warn('data transform no headers and no body', { requestId: requestId });
-        return response.status(200).set({ 'X-Return-Code': 0 }).send(data);
+        return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
       } else {
         loggerFactory.warn('data transform have headers and have body', { requestId: requestId });
         headers['X-Return-Code'] = 0;
