@@ -82,7 +82,7 @@ function handleMapping(params = {}) {
       }
     })
     .catch((err) => {
-      handleError({ err, response, requestId, loggerFactory, loggerTracer });
+      handleError({ err, request, response, requestId, loggerFactory, loggerTracer });
     });
 }
 
