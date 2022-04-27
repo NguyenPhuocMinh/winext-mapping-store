@@ -13,7 +13,7 @@ function handleError(params = {}) {
   if (err instanceof Error) {
     loggerFactory.error(`error has type Error`, {
       requestId: `${requestId}`,
-      args: err.name,
+      args: { name: err.name, stack: err.stack },
     });
     response.status(500).send({
       data: {},
