@@ -47,6 +47,7 @@ function handleMapping(params = {}) {
     })
     .then(async (data) => {
       const headers = get(data, 'headers');
+      const cookies = get(data, 'cookies');
       const body = get(data, 'body');
       const message = get(data, 'message');
 
@@ -69,16 +70,25 @@ function handleMapping(params = {}) {
         messageCodes,
       });
 
-      if (isEmpty(headers) && !isEmpty(body)) {
-        loggerFactory.warn('data transform no headers and have body', { requestId: requestId });
-        return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
-      } else if (isEmpty(headers) && isEmpty(body)) {
-        loggerFactory.warn('data transform no headers and no body', { requestId: requestId });
-        return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
-      } else {
-        loggerFactory.warn('data transform have headers and have body', { requestId: requestId });
-        headers['X-Return-Code'] = 0;
-        return response.status(template.statusCode).set(headers).send(template);
+      switch (true) {
+        case isEmpty(headers) && isEmpty(cookies):
+          loggerFactory.warn('data transform no headers and no cookies', { requestId: requestId });
+          return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
+        case isEmpty(headers) && !isEmpty(cookies) && !isEmpty(body):
+          loggerFactory.warn('data transform no headers and have cookie and body', { requestId: requestId });
+          return response
+            .cookie('X-Access-Token', cookies['X-Access-Token'], {
+              maxAge: 86400,
+              httpOnly: true,
+              secure: process.env.NODE_ENV === 'production',
+            })
+            .status(template.statusCode)
+            .set({ 'X-Return-Code': 0 })
+            .send(template);
+        default:
+          loggerFactory.warn('data transform have headers and have body', { requestId: requestId });
+          headers['X-Return-Code'] = 0;
+          return response.status(template.statusCode).set(headers).send(template);
       }
     })
     .catch((err) => {
