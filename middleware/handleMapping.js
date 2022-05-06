@@ -77,12 +77,13 @@ function handleMapping(params = {}) {
         case isEmpty(headers) && !isEmpty(cookies) && !isEmpty(body):
           loggerFactory.warn('data transform no headers and have cookie and body', { requestId: requestId });
           return response
+            .status(template.statusCode)
             .cookie('X-Access-Token', cookies['X-Access-Token'], {
               maxAge: 86400,
               httpOnly: true,
+              sameSite: 'strict',
               secure: process.env.NODE_ENV === 'production',
             })
-            .status(template.statusCode)
             .set({ 'X-Return-Code': 0 })
             .send(template);
         default:
