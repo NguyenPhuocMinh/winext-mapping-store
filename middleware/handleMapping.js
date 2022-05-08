@@ -48,6 +48,7 @@ function handleMapping(params = {}) {
     .then(async (data) => {
       const headers = get(data, 'headers');
       const cookies = get(data, 'cookies');
+      const clearCookie = get(data, 'clearCookie');
       const body = get(data, 'body');
       const message = get(data, 'message');
 
@@ -84,6 +85,13 @@ function handleMapping(params = {}) {
               sameSite: 'strict',
               secure: process.env.NODE_ENV === 'production',
             })
+            .set({ 'X-Return-Code': 0 })
+            .send(template);
+        case isEmpty(headers) && isEmpty(cookies) && !isEmpty(clearCookie):
+          loggerFactory.warn('data transform no headers and no cookie and have clearCookie', { requestId: requestId });
+          return response
+            .status(template.statusCode)
+            .clearCookie('X-Access-Token')
             .set({ 'X-Return-Code': 0 })
             .send(template);
         default:
