@@ -47,8 +47,8 @@ function handleMapping(params = {}) {
     })
     .then(async (data) => {
       const headers = get(data, 'headers');
-      const cookies = get(data, 'cookies');
-      const clearCookie = get(data, 'clearCookie');
+      const setCookies = get(data, 'setCookies');
+      const clearCookies = get(data, 'clearCookies');
       const body = get(data, 'body');
       const message = get(data, 'message');
 
@@ -72,28 +72,35 @@ function handleMapping(params = {}) {
       });
 
       switch (true) {
-        case isEmpty(headers) && isEmpty(cookies):
-          loggerFactory.warn('data transform no headers and no cookies', { requestId: requestId });
+        case isEmpty(headers) && isEmpty(setCookies) && isEmpty(clearCookies) && !isEmpty(body):
+          loggerFactory.warn('data transform no headers and no cookies and no clearCookies', { requestId: requestId });
           return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
-        case isEmpty(headers) && !isEmpty(cookies) && !isEmpty(body):
-          loggerFactory.warn('data transform no headers and have cookie and body', { requestId: requestId });
-          return response
-            .status(template.statusCode)
-            .cookie('X-Access-Token', cookies['X-Access-Token'], {
-              maxAge: 86400,
-              httpOnly: true,
-              sameSite: 'strict',
-              secure: process.env.NODE_ENV === 'production',
-            })
-            .set({ 'X-Return-Code': 0 })
-            .send(template);
-        case isEmpty(headers) && isEmpty(cookies) && !isEmpty(clearCookie):
+        case isEmpty(headers) && !isEmpty(setCookies) && isEmpty(clearCookies) && !isEmpty(body):
+          loggerFactory.warn('data transform no headers and no clearCookies and have cookie and body', {
+            requestId: requestId,
+          });
+          for (const key in setCookies) {
+            const value = !isEmpty(setCookies[key].value) ? setCookies[key].value : '';
+            const options = !isEmpty(setCookies[key].options)
+              ? setCookies[key].options
+              : {
+                  httpOnly: true,
+                  secure: process.env.NODE_ENV === 'production',
+                };
+            response.cookie(key, value, options);
+          }
+          return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
+        case isEmpty(headers) && isEmpty(setCookies) && !isEmpty(clearCookies) && isEmpty(body):
           loggerFactory.warn('data transform no headers and no cookie and have clearCookie', { requestId: requestId });
-          return response
-            .status(template.statusCode)
-            .clearCookie('X-Access-Token')
-            .set({ 'X-Return-Code': 0 })
-            .send(template);
+          for (const key in clearCookies) {
+            const options = clearCookies[key].options;
+            if (!isEmpty(options)) {
+              response.clearCookie(key, options);
+            } else {
+              response.clearCookie(key);
+            }
+          }
+          return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
         default:
           loggerFactory.warn('data transform have headers and have body', { requestId: requestId });
           headers['X-Return-Code'] = 0;

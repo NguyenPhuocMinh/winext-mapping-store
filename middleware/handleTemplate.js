@@ -2,6 +2,8 @@
 
 const winext = require('winext');
 const chalk = winext.require('chalk');
+const lodash = winext.require('lodash');
+const { isEmpty } = lodash;
 
 const handleTemplate = (params = {}) => {
   const { request, opts = {}, body, message, messageCodes } = params;
@@ -20,7 +22,7 @@ const handleTemplate = (params = {}) => {
       requestId: requestId,
       args: message,
     });
-    template.data = body;
+    template.data = !isEmpty(body) ? body : {};
     template.method = method;
     template.endpoint = path;
     template.name = message;
