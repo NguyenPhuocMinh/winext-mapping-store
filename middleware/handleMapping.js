@@ -3,21 +3,17 @@
 const winext = require('winext');
 const Promise = winext.require('bluebird');
 const lodash = winext.require('lodash');
-const chalk = winext.require('chalk');
 const handleError = require('./handleError');
 const handleTemplate = require('./handleTemplate');
 const { get, isEmpty, isFunction, isNil } = lodash;
 
 function handleMapping(params = {}) {
-  const { request, response, input, output, service, loggerFactory, loggerTracer, messageCodes } = params;
-
-  loggerTracer.info(chalk.green.bold(`Load func handleMapping successfully!`));
+  const { request, response, input, output, service, loggerTracer, messageCodes } = params;
 
   let argsInput = {};
   let argsOutput = {};
 
   const opts = {
-    loggerFactory: loggerFactory,
     loggerTracer: loggerTracer,
   };
 
@@ -31,7 +27,6 @@ function handleMapping(params = {}) {
     resolve(argsInput);
   })
     .then((args) => {
-      loggerTracer.warn(chalk.yellow.bold(`args service: ${JSON.stringify(args)}`));
       return service(args, opts);
     })
     .then((result) => {
@@ -72,10 +67,10 @@ function handleMapping(params = {}) {
 
       switch (true) {
         case isEmpty(headers) && isEmpty(setCookies) && isEmpty(clearCookies) && !isEmpty(body):
-          loggerFactory.warn('data transform no headers and no cookies and no clearCookies');
+          loggerTracer.warn('data transform no headers and no cookies and no clearCookies');
           return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
         case isEmpty(headers) && !isEmpty(setCookies) && isEmpty(clearCookies) && !isEmpty(body):
-          loggerFactory.warn('data transform no headers and no clearCookies and have cookie and body');
+          loggerTracer.warn('data transform no headers and no clearCookies and have cookie and body');
           for (const key in setCookies) {
             const value = !isEmpty(setCookies[key].value) ? setCookies[key].value : '';
             const options = !isEmpty(setCookies[key].options)
@@ -88,7 +83,7 @@ function handleMapping(params = {}) {
           }
           return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
         case isEmpty(headers) && isEmpty(setCookies) && !isEmpty(clearCookies) && isEmpty(body):
-          loggerFactory.warn('data transform no headers and no cookie and have clearCookie');
+          loggerTracer.warn('data transform no headers and no cookie and have clearCookie');
           for (const key in clearCookies) {
             const options = clearCookies[key].options;
             if (!isEmpty(options)) {
@@ -99,13 +94,13 @@ function handleMapping(params = {}) {
           }
           return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
         default:
-          loggerFactory.warn('data transform have headers and have body');
+          loggerTracer.warn('data transform have headers and have body');
           headers['X-Return-Code'] = 0;
           return response.status(template.statusCode).set(headers).send(template);
       }
     })
     .catch((err) => {
-      handleError({ err, request, response, loggerFactory, loggerTracer });
+      handleError({ err, request, response, loggerTracer });
     });
 }
 

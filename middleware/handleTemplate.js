@@ -1,24 +1,21 @@
 'use strict';
 
 const winext = require('winext');
-const chalk = winext.require('chalk');
 const lodash = winext.require('lodash');
 const { isEmpty } = lodash;
 
 const handleTemplate = (params = {}) => {
   const { request, opts = {}, body, message, messageCodes } = params;
-  const { loggerFactory, loggerTracer } = opts;
-
-  loggerTracer.info(chalk.green.bold(`Load func handleTemplate successfully!`));
+  const { loggerTracer } = opts;
 
   const { path, method } = request;
 
   const template = {};
 
-  loggerFactory.warn('Func handleTemplate has been start');
+  loggerTracer.warn('Func handleTemplate has been start');
 
   if (Object.prototype.hasOwnProperty.call(messageCodes, message)) {
-    loggerFactory.warn('Message hasOwnProperty in messageCodes', {
+    loggerTracer.warn('Message hasOwnProperty in messageCodes', {
       args: message,
     });
     template.data = !isEmpty(body) ? body : {};
@@ -29,7 +26,7 @@ const handleTemplate = (params = {}) => {
     template.returnCode = messageCodes[message].returnCode;
     template.statusCode = messageCodes[message].statusCode;
   } else {
-    loggerFactory.warn('Message not hasOwnProperty in messageCodes', {
+    loggerTracer.warn('Message not hasOwnProperty in messageCodes', {
       args: message,
     });
     template.data = {};
@@ -41,7 +38,7 @@ const handleTemplate = (params = {}) => {
     template.statusCode = 400;
   }
 
-  loggerFactory.warn('Func handleTemplate has been end');
+  loggerTracer.warn('Func handleTemplate has been end');
 
   return template;
 };
