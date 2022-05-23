@@ -8,10 +8,9 @@ const handleTemplate = require('./handleTemplate');
 const { get, isEmpty, isNil } = lodash;
 
 async function handleCaching(params = {}) {
-  const { request, response, next, redisStore, requestId, loggerFactory, loggerTracer, messageCodes } = params;
+  const { request, response, next, redisStore, loggerFactory, loggerTracer, messageCodes } = params;
 
   const opts = {
-    requestId: requestId,
     loggerFactory: loggerFactory,
     loggerTracer: loggerTracer,
   };
@@ -22,15 +21,12 @@ async function handleCaching(params = {}) {
   const redisKey = request.path;
 
   try {
-    loggerFactory.info(`handleCaching has been start`, {
-      requestId: `${requestId}`,
-    });
+    loggerFactory.info(`handleCaching has been start`);
     await redisClient.connect().catch((_) => {}); // fix connect redis v4
 
     await redisClient.get(redisKey, async (err, reply) => {
       if (err) {
         loggerFactory.error(`redis get data has err with redisKey`, {
-          requestId: `${requestId}`,
           args: {
             redisKey: redisKey,
             err: err,
@@ -39,7 +35,6 @@ async function handleCaching(params = {}) {
       }
       if (!isEmpty(reply)) {
         loggerFactory.warn(`handleCaching has data with redisKey`, {
-          requestId: `${requestId}`,
           args: redisKey,
         });
 
@@ -52,7 +47,6 @@ async function handleCaching(params = {}) {
 
         if (!isNil(data.total)) {
           loggerFactory.warn(`handleCaching has data and total with redisKey`, {
-            requestId: `${requestId}`,
             args: {
               redisKey: redisKey,
               total: data.total,
@@ -71,7 +65,6 @@ async function handleCaching(params = {}) {
           response.status(template.statusCode).set(headers).send(template);
         } else {
           loggerFactory.warn(`handleCaching has data and no total with redisKey`, {
-            requestId: `${requestId}`,
             args: {
               redisKey: redisKey,
             },
@@ -80,22 +73,17 @@ async function handleCaching(params = {}) {
           response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
         }
         await redisClient.disconnect();
-        loggerFactory.warn(`handleCaching has been end`, {
-          requestId: `${requestId}`,
-        });
+        loggerFactory.warn(`handleCaching has been end`);
       } else {
         loggerFactory.warn(`handleCaching no has data with redisKey`, {
-          requestId: `${requestId}`,
           args: redisKey,
         });
-        loggerFactory.warn(`handleCaching has been end`, {
-          requestId: `${requestId}`,
-        });
+        loggerFactory.warn(`handleCaching has been end`);
         return next();
       }
     });
   } catch (err) {
-    handleError({ err, request, response, requestId, loggerFactory, loggerTracer });
+    handleError({ err, request, response, loggerFactory, loggerTracer });
   }
 }
 

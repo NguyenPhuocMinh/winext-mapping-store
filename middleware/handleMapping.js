@@ -9,7 +9,7 @@ const handleTemplate = require('./handleTemplate');
 const { get, isEmpty, isFunction, isNil } = lodash;
 
 function handleMapping(params = {}) {
-  const { request, response, input, output, service, requestId, loggerFactory, loggerTracer, messageCodes } = params;
+  const { request, response, input, output, service, loggerFactory, loggerTracer, messageCodes } = params;
 
   loggerTracer.info(chalk.green.bold(`Load func handleMapping successfully!`));
 
@@ -17,7 +17,6 @@ function handleMapping(params = {}) {
   let argsOutput = {};
 
   const opts = {
-    requestId: requestId,
     loggerFactory: loggerFactory,
     loggerTracer: loggerTracer,
   };
@@ -73,12 +72,10 @@ function handleMapping(params = {}) {
 
       switch (true) {
         case isEmpty(headers) && isEmpty(setCookies) && isEmpty(clearCookies) && !isEmpty(body):
-          loggerFactory.warn('data transform no headers and no cookies and no clearCookies', { requestId: requestId });
+          loggerFactory.warn('data transform no headers and no cookies and no clearCookies');
           return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
         case isEmpty(headers) && !isEmpty(setCookies) && isEmpty(clearCookies) && !isEmpty(body):
-          loggerFactory.warn('data transform no headers and no clearCookies and have cookie and body', {
-            requestId: requestId,
-          });
+          loggerFactory.warn('data transform no headers and no clearCookies and have cookie and body');
           for (const key in setCookies) {
             const value = !isEmpty(setCookies[key].value) ? setCookies[key].value : '';
             const options = !isEmpty(setCookies[key].options)
@@ -91,7 +88,7 @@ function handleMapping(params = {}) {
           }
           return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
         case isEmpty(headers) && isEmpty(setCookies) && !isEmpty(clearCookies) && isEmpty(body):
-          loggerFactory.warn('data transform no headers and no cookie and have clearCookie', { requestId: requestId });
+          loggerFactory.warn('data transform no headers and no cookie and have clearCookie');
           for (const key in clearCookies) {
             const options = clearCookies[key].options;
             if (!isEmpty(options)) {
@@ -102,13 +99,13 @@ function handleMapping(params = {}) {
           }
           return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
         default:
-          loggerFactory.warn('data transform have headers and have body', { requestId: requestId });
+          loggerFactory.warn('data transform have headers and have body');
           headers['X-Return-Code'] = 0;
           return response.status(template.statusCode).set(headers).send(template);
       }
     })
     .catch((err) => {
-      handleError({ err, request, response, requestId, loggerFactory, loggerTracer });
+      handleError({ err, request, response, loggerFactory, loggerTracer });
     });
 }
 

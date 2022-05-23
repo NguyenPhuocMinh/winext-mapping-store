@@ -7,7 +7,7 @@ const { isEmpty } = lodash;
 
 const handleTemplate = (params = {}) => {
   const { request, opts = {}, body, message, messageCodes } = params;
-  const { requestId, loggerFactory, loggerTracer } = opts;
+  const { loggerFactory, loggerTracer } = opts;
 
   loggerTracer.info(chalk.green.bold(`Load func handleTemplate successfully!`));
 
@@ -15,11 +15,10 @@ const handleTemplate = (params = {}) => {
 
   const template = {};
 
-  loggerFactory.warn('Func handleTemplate has been start', { requestId: requestId });
+  loggerFactory.warn('Func handleTemplate has been start');
 
   if (Object.prototype.hasOwnProperty.call(messageCodes, message)) {
     loggerFactory.warn('Message hasOwnProperty in messageCodes', {
-      requestId: requestId,
       args: message,
     });
     template.data = !isEmpty(body) ? body : {};
@@ -31,7 +30,6 @@ const handleTemplate = (params = {}) => {
     template.statusCode = messageCodes[message].statusCode;
   } else {
     loggerFactory.warn('Message not hasOwnProperty in messageCodes', {
-      requestId: requestId,
       args: message,
     });
     template.data = {};
@@ -43,7 +41,7 @@ const handleTemplate = (params = {}) => {
     template.statusCode = 400;
   }
 
-  loggerFactory.warn('Func handleTemplate has been end', { requestId: requestId });
+  loggerFactory.warn('Func handleTemplate has been end');
 
   return template;
 };
