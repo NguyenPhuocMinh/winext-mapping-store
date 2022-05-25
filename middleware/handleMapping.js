@@ -25,7 +25,7 @@ function handleMapping(params = {}) {
   }
 
   return new Promise((resolve, reject) => {
-    loggerTracer.info(`handleMapping has been start`);
+    loggerTracer.info(`HandleMapping has been start`);
     resolve(argsInput);
   })
     .then((args) => {
@@ -71,7 +71,7 @@ function handleMapping(params = {}) {
         case isEmpty(headers) && isEmpty(setCookies) && isEmpty(clearCookies) && !isEmpty(body):
           loggerTracer.debug('data transform no headers and no cookies and no clearCookies');
           response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
-          loggerTracer.info(`handleMapping has been end`);
+          loggerTracer.info(`HandleMapping has been end`);
           break;
         case isEmpty(headers) && !isEmpty(setCookies) && isEmpty(clearCookies) && !isEmpty(body):
           loggerTracer.debug('data transform no headers and no clearCookies and have cookie and body');
@@ -86,7 +86,7 @@ function handleMapping(params = {}) {
             response.cookie(key, value, options);
           }
           response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
-          loggerTracer.info(`handleMapping has been end`);
+          loggerTracer.info(`HandleMapping has been end`);
           break;
         case isEmpty(headers) && isEmpty(setCookies) && !isEmpty(clearCookies) && isEmpty(body):
           loggerTracer.debug('data transform no headers and no cookie and have clearCookie');
@@ -99,13 +99,13 @@ function handleMapping(params = {}) {
             }
           }
           response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
-          loggerTracer.info(`handleMapping has been end`);
+          loggerTracer.info(`HandleMapping has been end`);
           break;
         default:
           loggerTracer.debug('data transform have headers and have body');
           headers['X-Return-Code'] = 0;
           response.status(template.statusCode).set(headers).send(template);
-          loggerTracer.info(`handleMapping has been end`);
+          loggerTracer.info(`HandleMapping has been end`);
           break;
       }
     })

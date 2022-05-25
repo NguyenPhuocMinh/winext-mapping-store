@@ -18,7 +18,7 @@ async function handleCaching(params = {}) {
   const redisKey = request.path;
 
   try {
-    loggerTracer.info(`handleCaching has been start`);
+    loggerTracer.info(`HandleCaching has been start`);
     await redisClient.connect().catch((_) => {}); // fix connect redis v4
 
     await redisClient.get(redisKey, async (err, reply) => {
@@ -72,10 +72,10 @@ async function handleCaching(params = {}) {
         await redisClient.disconnect();
         loggerTracer.info(`handleCaching has been end`);
       } else {
-        loggerTracer.debug(`handleCaching no has data with redisKey`, {
+        loggerTracer.debug(`HandleCaching no has data with redisKey`, {
           args: redisKey,
         });
-        loggerTracer.info(`handleCaching has been end`);
+        loggerTracer.info(`HandleCaching has been end`);
         return next();
       }
     });

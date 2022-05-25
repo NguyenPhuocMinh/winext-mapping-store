@@ -12,7 +12,7 @@ const handleTemplate = (params = {}) => {
 
   const template = {};
 
-  loggerTracer.warn('Func handleTemplate has been start');
+  loggerTracer.warn('HandleTemplate has been start');
 
   if (Object.prototype.hasOwnProperty.call(messageCodes, message)) {
     loggerTracer.warn('Message hasOwnProperty in messageCodes', {
@@ -38,7 +38,7 @@ const handleTemplate = (params = {}) => {
     template.statusCode = 400;
   }
 
-  loggerTracer.warn('Func handleTemplate has been end');
+  loggerTracer.warn('HandleTemplate has been end');
 
   return template;
 };
