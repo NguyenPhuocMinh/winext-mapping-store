@@ -9,7 +9,10 @@ function handleError(params = {}) {
 
   if (err instanceof Error) {
     loggerTracer.error(`error has type Error`, {
-      args: { name: err.name, stack: err.stack },
+      args: {
+        name: err.name,
+        stack: err.stack,
+      },
     });
     response.status(500).send({
       data: {},
@@ -22,7 +25,9 @@ function handleError(params = {}) {
     });
     return Promise.reject(err);
   } else {
-    loggerTracer.error(`error has not type Error`, { args: err });
+    loggerTracer.error(`error has not type Error`, {
+      args: err,
+    });
     const { name, message, statusCode, returnCode } = err;
     response.status(statusCode).set({ 'X-Return-Code': returnCode }).send({
       data: {},

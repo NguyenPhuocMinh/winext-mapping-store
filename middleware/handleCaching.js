@@ -7,9 +7,10 @@ const handleTemplate = require('./handleTemplate');
 const { get, isEmpty, isNil } = lodash;
 
 async function handleCaching(params = {}) {
-  const { request, response, next, redisStore, loggerTracer, messageCodes } = params;
+  const { request, response, next, redisStore, logUtils, loggerTracer, messageCodes } = params;
 
   const opts = {
+    logUtils: logUtils,
     loggerTracer: loggerTracer,
   };
 
@@ -30,7 +31,7 @@ async function handleCaching(params = {}) {
         });
       }
       if (!isEmpty(reply)) {
-        loggerTracer.warn(`handleCaching has data with redisKey`, {
+        loggerTracer.debug(`handleCaching has data with redisKey`, {
           args: redisKey,
         });
 
@@ -42,7 +43,7 @@ async function handleCaching(params = {}) {
         body.result = data.result;
 
         if (!isNil(data.total)) {
-          loggerTracer.warn(`handleCaching has data and total with redisKey`, {
+          loggerTracer.debug(`handleCaching has data and total with redisKey`, {
             args: {
               redisKey: redisKey,
               total: data.total,
@@ -60,7 +61,7 @@ async function handleCaching(params = {}) {
           };
           response.status(template.statusCode).set(headers).send(template);
         } else {
-          loggerTracer.warn(`handleCaching has data and no total with redisKey`, {
+          loggerTracer.debug(`handleCaching has data and no total with redisKey`, {
             args: {
               redisKey: redisKey,
             },
@@ -69,12 +70,12 @@ async function handleCaching(params = {}) {
           response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
         }
         await redisClient.disconnect();
-        loggerTracer.warn(`handleCaching has been end`);
+        loggerTracer.info(`handleCaching has been end`);
       } else {
-        loggerTracer.warn(`handleCaching no has data with redisKey`, {
+        loggerTracer.debug(`handleCaching no has data with redisKey`, {
           args: redisKey,
         });
-        loggerTracer.warn(`handleCaching has been end`);
+        loggerTracer.info(`handleCaching has been end`);
         return next();
       }
     });

@@ -8,12 +8,13 @@ const handleTemplate = require('./handleTemplate');
 const { get, isEmpty, isFunction, isNil } = lodash;
 
 function handleMapping(params = {}) {
-  const { request, response, input, output, service, loggerTracer, messageCodes } = params;
+  const { request, response, input, output, service, logUtils, loggerTracer, messageCodes } = params;
 
   let argsInput = {};
   let argsOutput = {};
 
   const opts = {
+    logUtils: logUtils,
     loggerTracer: loggerTracer,
   };
 
@@ -24,6 +25,7 @@ function handleMapping(params = {}) {
   }
 
   return new Promise((resolve, reject) => {
+    loggerTracer.info(`handleMapping has been start`);
     resolve(argsInput);
   })
     .then((args) => {
@@ -67,10 +69,12 @@ function handleMapping(params = {}) {
 
       switch (true) {
         case isEmpty(headers) && isEmpty(setCookies) && isEmpty(clearCookies) && !isEmpty(body):
-          loggerTracer.warn('data transform no headers and no cookies and no clearCookies');
-          return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
+          loggerTracer.debug('data transform no headers and no cookies and no clearCookies');
+          response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
+          loggerTracer.info(`handleMapping has been end`);
+          break;
         case isEmpty(headers) && !isEmpty(setCookies) && isEmpty(clearCookies) && !isEmpty(body):
-          loggerTracer.warn('data transform no headers and no clearCookies and have cookie and body');
+          loggerTracer.debug('data transform no headers and no clearCookies and have cookie and body');
           for (const key in setCookies) {
             const value = !isEmpty(setCookies[key].value) ? setCookies[key].value : '';
             const options = !isEmpty(setCookies[key].options)
@@ -81,9 +85,11 @@ function handleMapping(params = {}) {
                 };
             response.cookie(key, value, options);
           }
-          return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
+          response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
+          loggerTracer.info(`handleMapping has been end`);
+          break;
         case isEmpty(headers) && isEmpty(setCookies) && !isEmpty(clearCookies) && isEmpty(body):
-          loggerTracer.warn('data transform no headers and no cookie and have clearCookie');
+          loggerTracer.debug('data transform no headers and no cookie and have clearCookie');
           for (const key in clearCookies) {
             const options = clearCookies[key].options;
             if (!isEmpty(options)) {
@@ -92,11 +98,15 @@ function handleMapping(params = {}) {
               response.clearCookie(key);
             }
           }
-          return response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
+          response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
+          loggerTracer.info(`handleMapping has been end`);
+          break;
         default:
-          loggerTracer.warn('data transform have headers and have body');
+          loggerTracer.debug('data transform have headers and have body');
           headers['X-Return-Code'] = 0;
-          return response.status(template.statusCode).set(headers).send(template);
+          response.status(template.statusCode).set(headers).send(template);
+          loggerTracer.info(`handleMapping has been end`);
+          break;
       }
     })
     .catch((err) => {
