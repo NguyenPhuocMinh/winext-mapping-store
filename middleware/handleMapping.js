@@ -102,6 +102,11 @@ function handleMapping(params = {}) {
           response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
           loggerTracer.info(`HandleMapping has been end`);
           break;
+        case isEmpty(headers) && isEmpty(body):
+          loggerTracer.debug('Data transform no headers and no body');
+          response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
+          loggerTracer.info(`HandleMapping has been end`);
+          break;
         default:
           loggerTracer.debug('Data transform have headers and have body');
           headers['X-Return-Code'] = 0;
