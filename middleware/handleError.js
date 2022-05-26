@@ -8,7 +8,7 @@ function handleError(params = {}) {
   const { method, path } = request;
 
   if (err instanceof Error) {
-    loggerTracer.error(`error has type Error`, {
+    loggerTracer.error(`Error has type Error`, {
       args: {
         name: err.name,
         stack: err.stack,
@@ -25,7 +25,7 @@ function handleError(params = {}) {
     });
     return Promise.reject(err);
   } else {
-    loggerTracer.error(`error has not type Error`, {
+    loggerTracer.error(`Error has not type Error`, {
       args: err,
     });
     const { name, message, statusCode, returnCode } = err;

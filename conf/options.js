@@ -6,6 +6,7 @@ const referenceKey = {
   data_graphql_store: 'app-repo-store/dataGraphqlStore',
   redis_client: 'app-redis-store/redisClient',
   error_manager: 'app-error-manager/errorManager',
+  log_utils: 'app-logger/logUtils',
 };
 
 const options = {

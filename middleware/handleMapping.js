@@ -5,6 +5,7 @@ const Promise = winext.require('bluebird');
 const lodash = winext.require('lodash');
 const handleError = require('./handleError');
 const handleTemplate = require('./handleTemplate');
+const profiles = require('../conf/profiles');
 const { get, isEmpty, isFunction, isNil } = lodash;
 
 function handleMapping(params = {}) {
@@ -69,19 +70,19 @@ function handleMapping(params = {}) {
 
       switch (true) {
         case isEmpty(headers) && isEmpty(setCookies) && isEmpty(clearCookies) && !isEmpty(body):
-          loggerTracer.debug('data transform no headers and no cookies and no clearCookies');
+          loggerTracer.debug('Data transform no headers and no cookies and no clearCookies');
           response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
           loggerTracer.info(`HandleMapping has been end`);
           break;
         case isEmpty(headers) && !isEmpty(setCookies) && isEmpty(clearCookies) && !isEmpty(body):
-          loggerTracer.debug('data transform no headers and no clearCookies and have cookie and body');
+          loggerTracer.debug('Data transform no headers and no clearCookies and have cookie and body');
           for (const key in setCookies) {
             const value = !isEmpty(setCookies[key].value) ? setCookies[key].value : '';
             const options = !isEmpty(setCookies[key].options)
               ? setCookies[key].options
               : {
                   httpOnly: true,
-                  secure: process.env.NODE_ENV === 'production',
+                  secure: profiles.isProduction,
                 };
             response.cookie(key, value, options);
           }
@@ -102,7 +103,7 @@ function handleMapping(params = {}) {
           loggerTracer.info(`HandleMapping has been end`);
           break;
         default:
-          loggerTracer.debug('data transform have headers and have body');
+          loggerTracer.debug('Data transform have headers and have body');
           headers['X-Return-Code'] = 0;
           response.status(template.statusCode).set(headers).send(template);
           loggerTracer.info(`HandleMapping has been end`);

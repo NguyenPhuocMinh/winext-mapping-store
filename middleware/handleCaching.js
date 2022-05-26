@@ -23,7 +23,7 @@ async function handleCaching(params = {}) {
 
     await redisClient.get(redisKey, async (err, reply) => {
       if (err) {
-        loggerTracer.error(`redis get data has err with redisKey`, {
+        loggerTracer.error(`Redis get data has err with redisKey`, {
           args: {
             redisKey: redisKey,
             err: err,
@@ -31,7 +31,7 @@ async function handleCaching(params = {}) {
         });
       }
       if (!isEmpty(reply)) {
-        loggerTracer.debug(`handleCaching has data with redisKey`, {
+        loggerTracer.debug(`HandleCaching has data with redisKey`, {
           args: redisKey,
         });
 
@@ -43,7 +43,7 @@ async function handleCaching(params = {}) {
         body.result = data.result;
 
         if (!isNil(data.total)) {
-          loggerTracer.debug(`handleCaching has data and total with redisKey`, {
+          loggerTracer.debug(`HandleCaching has data and total with redisKey`, {
             args: {
               redisKey: redisKey,
               total: data.total,
@@ -61,7 +61,7 @@ async function handleCaching(params = {}) {
           };
           response.status(template.statusCode).set(headers).send(template);
         } else {
-          loggerTracer.debug(`handleCaching has data and no total with redisKey`, {
+          loggerTracer.debug(`HandleCaching has data and no total with redisKey`, {
             args: {
               redisKey: redisKey,
             },
@@ -70,7 +70,7 @@ async function handleCaching(params = {}) {
           response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
         }
         await redisClient.disconnect();
-        loggerTracer.info(`handleCaching has been end`);
+        loggerTracer.info(`HandleCaching has been end`);
       } else {
         loggerTracer.debug(`HandleCaching no has data with redisKey`, {
           args: redisKey,
