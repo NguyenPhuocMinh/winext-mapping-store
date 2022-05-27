@@ -70,12 +70,12 @@ function handleMapping(params = {}) {
 
       switch (true) {
         case isEmpty(headers) && isEmpty(setCookies) && isEmpty(clearCookies) && !isEmpty(body):
-          loggerTracer.debug('Data transform no headers and no cookies and no clearCookies');
+          loggerTracer.data('Data transform no headers and no cookies and no clearCookies');
           response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
           loggerTracer.info(`HandleMapping has been end`);
           break;
         case isEmpty(headers) && !isEmpty(setCookies) && isEmpty(clearCookies) && !isEmpty(body):
-          loggerTracer.debug('Data transform no headers and no clearCookies and have cookie and body');
+          loggerTracer.data('Data transform no headers and no clearCookies and have cookie and body');
           for (const key in setCookies) {
             const value = !isEmpty(setCookies[key].value) ? setCookies[key].value : '';
             const options = !isEmpty(setCookies[key].options)
@@ -90,7 +90,7 @@ function handleMapping(params = {}) {
           loggerTracer.info(`HandleMapping has been end`);
           break;
         case isEmpty(headers) && isEmpty(setCookies) && !isEmpty(clearCookies) && isEmpty(body):
-          loggerTracer.debug('data transform no headers and no cookie and have clearCookie');
+          loggerTracer.data('data transform no headers and no cookie and have clearCookie');
           for (const key in clearCookies) {
             const options = clearCookies[key].options;
             if (!isEmpty(options)) {
@@ -103,12 +103,12 @@ function handleMapping(params = {}) {
           loggerTracer.info(`HandleMapping has been end`);
           break;
         case isEmpty(headers) && isEmpty(body):
-          loggerTracer.debug('Data transform no headers and no body');
+          loggerTracer.data('Data transform no headers and no body');
           response.status(template.statusCode).set({ 'X-Return-Code': 0 }).send(template);
           loggerTracer.info(`HandleMapping has been end`);
           break;
         default:
-          loggerTracer.debug('Data transform have headers and have body');
+          loggerTracer.data('Data transform have headers and have body');
           headers['X-Return-Code'] = 0;
           response.status(template.statusCode).set(headers).send(template);
           loggerTracer.info(`HandleMapping has been end`);

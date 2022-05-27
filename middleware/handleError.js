@@ -38,7 +38,7 @@ function handleError(params = {}) {
       returnCode: returnCode,
       statusCode: statusCode,
     });
-    return Promise.reject(JSON.stringify(err));
+    return Promise.reject(JSON.stringify(err, null, 2));
   }
 }
 
